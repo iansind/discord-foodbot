@@ -9,4 +9,5 @@ Upon a new member joining, the bot will direct message them a welcome message.
 Client-side commands:  
 + "!recipe {dish}" - returns a url to the top result of that dish from allrecipes.com.  
 + "!temp {meat}" - returns the recommended internal temperature of a meat.  
++ "!isolate {url}" - returns lines consisting only of ingredient list and directions from a given allrecipes.com URL, using a BeautifulSoup-based web scraper.  
 <!-- end of the list -->  
