@@ -48,29 +48,30 @@ async def on_message(message):
     if message.content[0:8] == '!recipe ':
         url = funcs.allrecipes_search(message.content[8:])
         await message.channel.send(url)
+    
 
     elif message.content[0:6] == '!temp ':
         temp = funcs.cook_temp(message.content[6:])
         await message.channel.send(temp)
 
-
-''' # Need to figure out how to handle multiple of these. 
-# Deletes the last 10 messages, verifying that the requestor has the appropriate permissions.
+# Performs various tasks in response to user queries.
 @client.event
 async def on_message(message):
-    if (message.author == client.user):
+    if message.author == client.user:
         return
 
-    role_names = [role.name for role in message.author.roles]
+    if message.content[0:8] == '!recipe ':
+        url = funcs.allrecipes_search(message.content[8:])
+        await message.channel.send(url)
 
-    #if 'Admin' in role_names:
-    #    await message.channel.send('yep')
+    elif message.content[0:9] == '!isolate ':
+        instructions = funcs.isolate_instructions(message.content[9:])
+        for line in instructions:
+            await message.channel.send(line)
 
-    if message.content == '!purge':
-        await message.channel.send('Deleting?')
-        # Need to fill in
-'''
-
+    elif message.content[0:6] == '!temp ':
+        temp = funcs.cook_temp(message.content[6:])
+        await message.channel.send(temp)
 
 #client = CustomClient()
 client.run(TOKEN)
