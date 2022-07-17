@@ -1,7 +1,10 @@
 from googlesearch import search
 import pandas as pd
+import requests
+from bs4 import BeautifulSoup
 
 
+# Returns the top search results from allrecipes.com for a queried dish.
 def allrecipes_search(dish):
     query = '"site:allrecipes.com": ' + dish
     url = None
@@ -15,6 +18,7 @@ def allrecipes_search(dish):
     return url
 
 
+# Returns cook temperatures of given meats from an external database.
 def cook_temp(meat):
     df = pd.read_csv(r'C:\Users\Ian\PycharmProjects\DiscBots\BeepBoopBot\temps.csv')
     meat = meat.upper()
@@ -23,3 +27,53 @@ def cook_temp(meat):
     else:
         return 'Try again with a new meat.'
     return str(z.iat[0, 0]).lower().capitalize() + ' should be cooked to ' + str(z.iat[0, 1]) + 'F.'
+
+
+# Gets the webpage and parses with BeautifulSoup. Returns a list of ingredients.
+def get_ingredients(url):
+    page = requests.get(url)
+
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    results = soup.find(class_='recipe-content-container')
+    ingredient_section = results.find('ul', class_='ingredients-section')
+
+    ingredients = [ingredient.text.strip() for ingredient in ingredient_section if ingredient.text.strip()]
+
+    ingredients = ['Ingredients:'] + ingredients
+
+    return ingredients
+
+
+# Gets the webpage and parses with BeautifulSoup. Returns a list of directions.
+def get_directions(url):
+    page = requests.get(url)
+
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    results = soup.find(class_='recipe-content-container')
+    instructions_section = results.find('ul', class_='instructions-section')
+
+    directions = [step.text.strip() for step in instructions_section if step.text.strip()]
+
+    # Removes the word "Advertisement" from the list of directions, if present.
+    for x in range(len(directions)):
+        if directions[x][-13:] == 'Advertisement':
+            directions[x] = directions[x][:-13].strip()
+
+    directions = ['Directions:'] + directions
+
+    return directions
+
+
+# Returns the isolated instructions from a given URL, provided that it is valid.
+def isolate_instructions(url):
+    try:
+        ingredients = get_ingredients(url)
+        directions = get_directions(url)
+
+    except:
+        return ['Error: unable to isolate ingredients and directions. '
+                'Please ensure you use a recipe page from allrecipes.com']
+
+    return ingredients + directions
