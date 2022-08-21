@@ -18,7 +18,7 @@ def allrecipes_search(dish):
     return url
 
 
-# Returns cook temperatures of given meats from an external database.
+# Returns cook temperatures of given meats from an external file.
 def cook_temp(meat):
     df = pd.read_csv(r'C:\Users\Ian\PycharmProjects\DiscBots\BeepBoopBot\temps.csv')
     meat = meat.upper()
