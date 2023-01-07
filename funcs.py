@@ -2,6 +2,7 @@ from googlesearch import search
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from joblib import load
 
 
 # Returns the top search results from allrecipes.com for a queried dish.
@@ -77,3 +78,28 @@ def isolate_instructions(url):
                 'Please ensure you use a recipe page from allrecipes.com']
 
     return ingredients + directions
+
+
+# Checks to make sure an argument is within a certain range. If not, prepares a corrective message to send.
+# Also imputes 'na' entries with appropriate metrics.
+def check_flag(attr, arg, lower=0, upper=1, binary=False):
+    if arg == 'na':
+        imp_vals = load('saved_fill_values.joblib')
+        return 'fill', imp_vals[attr]
+
+    if binary:
+        if arg not in ('0', '1'):
+            return 'fail', 'Please check your entry for ' + attr + ' and try again.'
+        return 'pass'
+
+    arg = float(arg)
+    if not lower <= arg <= upper:
+        return 'fail', 'Please check your value of ' + str(arg) + ' and try again.'
+    return 'pass'
+
+
+# Classifies milk quality via a previously-trained sklearn model.
+def milk_predict(variables):
+    variables = [float(x) for x in variables]
+    mod_test = load('saved_model.joblib')
+    return mod_test.predict([variables])
