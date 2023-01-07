@@ -92,9 +92,12 @@ def check_flag(attr, arg, lower=0, upper=1, binary=False):
             return 'fail', 'Please check your entry for ' + attr + ' and try again.'
         return 'pass'
 
+    if not arg.isnumeric():
+        return 'fail', 'Please check your value of ' + attr + ' and try again.'
+
     arg = float(arg)
     if not lower <= arg <= upper:
-        return 'fail', 'Please check your value of ' + str(arg) + ' and try again.'
+        return 'fail', 'Please check your value of ' + attr + ' and try again.'
     return 'pass'
 
 
