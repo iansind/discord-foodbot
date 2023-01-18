@@ -21,7 +21,7 @@ def allrecipes_search(dish):
 
 # Returns cook temperatures of given meats from an external file.
 def cook_temp(meat):
-    df = pd.read_csv(r'C:\Users\Ian\PycharmProjects\DiscBots\BeepBoopBot\temps.csv')
+    df = pd.read_csv(r'temps.csv')
     meat = meat.upper()
     if meat in df['MEAT'].tolist():
         z = df.loc[df['MEAT'] == meat.upper()]
